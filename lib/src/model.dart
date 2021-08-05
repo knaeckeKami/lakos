@@ -206,6 +206,9 @@ class Metrics {
   /// The first dependency cycle found if the graph is not acyclic.
   List<String> firstCycle = [];
 
+  /// The first dependency cycle found if the graph is not acyclic.
+  List<List<String>>? allCycles;
+
   /// Number of nodes (dart files).
   int numNodes;
 
@@ -245,7 +248,8 @@ class Metrics {
       this.acd,
       this.nccd,
       this.totalSloc,
-      this.avgSloc);
+      this.avgSloc,
+      {this.allCycles});
 
   /// Returns this object in dot format.
   @override
@@ -256,7 +260,10 @@ class Metrics {
   /// Returns this object in JSON format.
   Map<String, dynamic> toJson() => {
         'isAcyclic': isAcyclic,
-        'firstCycle': firstCycle,
+        if(allCycles != null)
+          'allCycles' : allCycles
+        else
+          'firstCycle': firstCycle,
         'numNodes': numNodes,
         'numEdges': numEdges,
         'avgDegree': avgDegree,

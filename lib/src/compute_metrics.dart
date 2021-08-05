@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:io';
 import 'package:lakos/src/model.dart';
 import 'package:directed_graph/directed_graph.dart';
+import 'package:lakos/src/all_cycles.dart';
 
 const precision = 2;
 
@@ -150,7 +151,7 @@ extension NumberRounding on num {
   }
 }
 
-Metrics computeMetrics(@modified Model model) {
+Metrics computeMetrics(@modified Model model, {bool computeAllCycles = false}) {
   var digraph = model.toDirectedGraph();
   computeNodeCDs(digraph, model);
   computeNodeDegreeMetrics(digraph, model);
@@ -163,6 +164,7 @@ Metrics computeMetrics(@modified Model model) {
   var totalSloc = computeTotalSloc(model);
   var avgSloc = totalSloc / numNodes;
   var firstCycle = digraph.cycle.map((node) => node).toList();
+  var allCycles = computeAllCycles ? digraph.allCycles() : null;
   var metrics = Metrics(
       firstCycle.isEmpty,
       firstCycle,
@@ -174,6 +176,7 @@ Metrics computeMetrics(@modified Model model) {
       computeACD(ccd, numNodes).toPrecision(precision) as double,
       computeNCCD(ccd, numNodes).toPrecision(precision) as double,
       totalSloc,
-      avgSloc.toPrecision(precision) as double);
+      avgSloc.toPrecision(precision) as double,
+      allCycles: allCycles);
   return metrics;
 }

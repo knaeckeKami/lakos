@@ -244,4 +244,28 @@ void main() {
       expect(result.exitCode, packages[package]);
     }
   });
+
+  test('generate json files--metrics--no all cycles test', () {
+    for (var package in packages.keys) {
+      var packageLocation = getPackageLocation(package)!;
+      var outputFilename = package == '.' ? 'lakos' : package;
+      var jsonFilename = join(outDir, '$outputFilename.metrics_all_cycles_no_test.json');
+
+      var lakosJsonCommand = [
+        lakos,
+        '--compute-all-cycles',
+        '-f',
+        'json',
+        '-o',
+        jsonFilename,
+        '-m',
+        '-i',
+        'test/**',
+        packageLocation.path
+      ];
+      print(lakosJsonCommand.join(' '));
+      var result = Process.runSync('dart', lakosJsonCommand);
+      expect(result.exitCode, packages[package]);
+    }
+  });
 }

@@ -65,7 +65,11 @@ void main(List<String> arguments) {
         help:
             'With --no-cycles-allowed lakos runs normally\nbut exits with a non-zero exit code\nif a dependency cycle is detected.\nUseful for CI builds.\n(defaults to --no-cycles-allowed)',
         defaultsTo: false,
-        negatable: true);
+        negatable: true)
+    ..addFlag('compute-all-cycles',
+        defaultsTo: false,
+        help:
+            'Compute all dependency cycles instead of stopping after the first. Only available if metrics is set and format is json.');
 
   // Parse args.
   late ArgResults argResults;
@@ -93,6 +97,7 @@ void main(List<String> arguments) {
   var nodeMetrics = argResults['node-metrics'] as bool;
   var ignore = argResults['ignore'] as String;
   var cyclesAllowed = argResults['cycles-allowed'] as bool?;
+  var computeAllCycles = argResults['compute-all-cycles'] as bool?;
 
   // Build model.
   late Model model;
@@ -101,7 +106,8 @@ void main(List<String> arguments) {
         ignoreGlob: ignore,
         showTree: tree,
         showMetrics: metrics,
-        showNodeMetrics: nodeMetrics);
+        showNodeMetrics: nodeMetrics,
+        computeAllCycles: computeAllCycles == true);
   } catch (e) {
     print(e);
     exit(ExitCode.BuildModelFailed.index);

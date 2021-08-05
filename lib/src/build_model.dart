@@ -224,7 +224,7 @@ Model buildModel(Directory rootDir,
     {String ignoreGlob = '!**',
     bool showTree = true,
     bool showMetrics = false,
-    bool showNodeMetrics = false}) {
+    bool showNodeMetrics = false, bool computeAllCycles = false,}) {
   // Convert relative to absolute path.
   if (!rootDir.isAbsolute) {
     rootDir = Directory(normalize(rootDir.absolute.path));
@@ -251,7 +251,7 @@ Model buildModel(Directory rootDir,
       getEdges(rootDir, ignoreGlob, pubspecYaml, model.nodes.keys.toList()));
 
   if (showMetrics) {
-    model.metrics = computeMetrics(model);
+    model.metrics = computeMetrics(model, computeAllCycles: computeAllCycles);
   }
 
   return model;
